@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biz English Buddy · 비즈니스 영어 회화</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- ── 시나리오 선택 화면 ── -->
+      <section id="home" class="screen active">
+        <header class="home-header">
+          <div class="badge">💛 for you</div>
+          <h1>Biz English Buddy</h1>
+          <p class="subtitle">매일 한 가지 상황으로, 비즈니스 영어를 입으로 연습해요.</p>
+        </header>
+
+        <div id="api-warning" class="api-warning hidden">
+          ⚠️ AI 두뇌가 아직 연결되지 않았어요. <code>README.md</code>의 안내대로 API 키를 설정해 주세요.
+        </div>
+
+        <h2 class="section-label">오늘은 어떤 상황을 연습해 볼까요?</h2>
+        <div id="scenario-grid" class="scenario-grid"></div>
+
+        <footer class="home-footer">
+          🎙️ 마이크로 영어를 말하면 AI가 알아듣고, 답을 소리 내어 읽어줘요.
+        </footer>
+      </section>
+
+      <!-- ── 대화 화면 ── -->
+      <section id="chat" class="screen">
+        <header class="chat-header">
+          <button id="back-btn" class="icon-btn" aria-label="뒤로">←</button>
+          <div class="chat-title">
+            <span id="chat-emoji">👥</span>
+            <span id="chat-scenario-title">시나리오</span>
+          </div>
+          <label class="ko-toggle">
+            <input type="checkbox" id="show-korean" />
+            <span>한글 보기</span>
+          </label>
+        </header>
+
+        <div id="messages" class="messages"></div>
+
+        <div class="composer">
+          <div id="interim" class="interim hidden"></div>
+          <div class="composer-row">
+            <button id="mic-btn" class="mic-btn" aria-label="말하기">
+              <span class="mic-icon">🎙️</span>
+            </button>
+            <input
+              id="text-input"
+              class="text-input"
+              type="text"
+              placeholder="영어로 말하거나 입력해 보세요…"
+              autocomplete="off"
+            />
+            <button id="send-btn" class="send-btn" aria-label="보내기">➤</button>
+          </div>
+          <div class="composer-hint" id="composer-hint">
+            🎙️ 버튼을 누르고 영어로 말해보세요
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
