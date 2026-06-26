@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
@@ -8,10 +9,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
-app.use(express.static(path.join(__dirname, "public")));
+app.set("trust proxy", true); // skopos.kr 등 리버스 프록시 뒤에서 동작
 
 const PORT = process.env.PORT || 3000;
 const MODEL = "claude-opus-4-8";
+
+// 하위 경로 배포 지원: 예) BASE_PATH=/kooenglish → skopos.kr/kooenglish
+// 비어 있으면 루트(/)에서 동작합니다.
+const BASE_PATH = (process.env.BASE_PATH || "").replace(/\/+$/, "");
+
+const publicDir = path.join(__dirname, "public");
+const indexTemplate = fs.readFileSync(path.join(publicDir, "index.html"), "utf8");
 
 // API 키가 없어도 서버는 뜨고, 호출 시점에 안내합니다.
 const client = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
@@ -126,10 +134,23 @@ const OUTPUT_SCHEMA = {
   additionalProperties: false,
 };
 
-// ── 라우트 ──────────────────────────────────────────────────────────────
+// ── 라우터 (BASE_PATH 하위에 마운트) ────────────────────────────────────
+const router = express.Router();
+
+// index.html — <base href>를 주입해 어떤 경로에서도 자산/요청 경로가 맞도록 함
+router.get("/", (_req, res) => {
+  const html = indexTemplate.replace(/__BASE_HREF__/g, `${BASE_PATH}/`);
+  res.type("html").send(html);
+});
+
+// 정적 자산 (자동 index 비활성화 — 위의 주입된 index를 사용)
+router.use(express.static(publicDir, { index: false }));
+
+// 헬스체크 (배포 모니터링용)
+router.get("/health", (_req, res) => res.json({ ok: true, hasApiKey: Boolean(client) }));
 
 // 사용 가능한 시나리오 목록 (오프너 포함)
-app.get("/api/scenarios", (_req, res) => {
+router.get("/api/scenarios", (_req, res) => {
   const list = Object.entries(SCENARIOS).map(([id, s]) => ({
     id,
     title: s.title,
@@ -141,7 +162,7 @@ app.get("/api/scenarios", (_req, res) => {
 });
 
 // 대화 한 턴 처리
-app.post("/api/chat", async (req, res) => {
+router.post("/api/chat", async (req, res) => {
   if (!client) {
     return res.status(503).json({
       error:
@@ -187,9 +208,18 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+app.use(BASE_PATH || "/", router);
+
+// 하위 경로 배포 시, 루트로 들어오면 앱 경로로 안내
+if (BASE_PATH) {
+  app.get("/", (_req, res) => res.redirect(`${BASE_PATH}/`));
+}
+
 app.listen(PORT, () => {
-  console.log(`\n💛 비즈니스 영어 회화 앱이 실행 중입니다`);
-  console.log(`   ➜  http://localhost:${PORT}`);
+  const where = BASE_PATH || "";
+  console.log(`\n💛 KooEnglish 서버 실행 중`);
+  console.log(`   ➜  http://localhost:${PORT}${where}/`);
+  if (BASE_PATH) console.log(`   (하위 경로 배포: BASE_PATH=${BASE_PATH})`);
   if (!client) {
     console.log(`\n⚠️  아직 ANTHROPIC_API_KEY가 없어요. .env 파일에 키를 넣으면 실제 대화가 작동합니다.`);
     console.log(`   (README.md의 "API 키 발급" 안내를 참고하세요)\n`);

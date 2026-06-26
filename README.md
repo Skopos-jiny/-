@@ -103,7 +103,24 @@ cloudflared tunnel --url http://localhost:3000
 출력되는 `https://....trycloudflare.com` 주소를 폰에서 열면 **말하기까지** 작동합니다.
 (맥을 켜두고 앱이 돌아가는 동안에만 접속 가능)
 
-### 방법 C — 무료 클라우드 배포 (어디서나 접속, 말하기 O) ⭐추천
+### 방법 D — skopos.kr/kooenglish 로 서비스 ⭐테스트 웹버전
+
+이미 운영 중인 `skopos.kr` 아래 하위 경로로 붙이는 방법입니다. skopos.kr의 HTTPS를
+그대로 쓰니 폰에서 **말하기까지** 바로 됩니다. 자세한 단계(Nginx/Caddy 설정 포함)는
+**[`DEPLOY-skopos.md`](./DEPLOY-skopos.md)** 를 참고하세요. 요약하면:
+
+```bash
+# .env 에 추가
+ANTHROPIC_API_KEY=sk-ant-...
+BASE_PATH=/kooenglish
+
+pm2 start server.js --name kooenglish      # 앱 실행
+# 그리고 Nginx에서 /kooenglish/ → 127.0.0.1:3000 프록시 (DEPLOY-skopos.md 참고)
+```
+
+→ 접속: **https://skopos.kr/kooenglish/**
+
+### 방법 C — 무료 클라우드 배포 (어디서나 접속, 말하기 O)
 
 아름이가 집 밖에서도, 맥을 안 켜도 폰으로 항상 쓸 수 있는 방법입니다.
 무료 호스팅 [Render](https://render.com) 기준:

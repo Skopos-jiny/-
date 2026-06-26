@@ -23,7 +23,7 @@ init();
 
 async function init() {
   try {
-    const res = await fetch("/api/scenarios");
+    const res = await fetch("api/scenarios");
     const data = await res.json();
     scenarios = data.scenarios;
     if (!data.hasApiKey) $("api-warning").classList.remove("hidden");
@@ -152,7 +152,7 @@ async function handleSend() {
   showTyping();
 
   try {
-    const res = await fetch("/api/chat", {
+    const res = await fetch("api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ scenarioId: current.id, messages: history }),
