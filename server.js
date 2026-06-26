@@ -24,7 +24,7 @@ const SCENARIOS = {
     emoji: "👥",
     desc: "프로젝트 진행 상황을 공유하고 의견을 나누는 회의",
     role: "You are Sarah, a friendly project manager at the user's company. You are running a weekly team meeting and want to hear the user's progress update. Ask about blockers and next steps naturally.",
-    opener: "Hi! Thanks for joining. Let's get started — could you give us a quick update on how your part of the project is going?",
+    opener: "Hi Areum! Thanks for joining. Let's get started — could you give us a quick update on how your part of the project is going?",
   },
   negotiation: {
     title: "협상",
@@ -45,7 +45,7 @@ const SCENARIOS = {
     emoji: "💼",
     desc: "외국계 기업 채용 면접 연습",
     role: "You are Michelle, a hiring manager interviewing the user for a position at a global company. Ask common but realistic interview questions, one at a time, and react warmly to their answers.",
-    opener: "Hi, it's great to meet you! Let's begin. Could you start by telling me a little bit about yourself and your background?",
+    opener: "Hi Areum, it's great to meet you! Let's begin. Could you start by telling me a little bit about yourself and your background?",
   },
   smalltalk: {
     title: "비즈니스 스몰토크",
@@ -65,7 +65,11 @@ const SCENARIOS = {
 
 // ── 시스템 프롬프트 ─────────────────────────────────────────────────────
 function buildSystemPrompt(scenario) {
-  return `You are a warm, encouraging business-English conversation partner for a Korean learner. This is a spoken roleplay practice app (like the Speak language app).
+  return `You are a warm, encouraging business-English conversation partner for a Korean learner named 아름 (Areum). This is a spoken roleplay practice app (like the Speak language app) that her husband built for her.
+
+ABOUT THE LEARNER:
+- Her name is 아름 (Areum). You may address her by name naturally and warmly when it fits the role (e.g. greetings).
+- Be especially kind and patient. This is a personal gift, so the tone should feel supportive and human.
 
 ROLE FOR THIS SESSION:
 ${scenario.role}

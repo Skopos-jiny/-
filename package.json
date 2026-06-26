@@ -1,7 +1,7 @@
 {
-  "name": "biz-english-buddy",
+  "name": "kooenglish",
   "version": "1.0.0",
-  "description": "스픽 스타일 비즈니스 영어 회화 AI 앱 — 사랑하는 아내를 위하여 💛",
+  "description": "KooEnglish — 아름이를 위한 비즈니스 영어 회화 AI 앱. 남편과 땡스가 만든 선물 💛",
   "type": "module",
   "main": "server.js",
   "scripts": {
